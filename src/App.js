@@ -7,9 +7,9 @@ const initialState = {
   directionX: 1,
   directionY: 0,
   food: [5, 5],
-  size: { x: 10, y: 10 },
+  size: { x: 20, y: 20 },
   snake: [[0, 0]],
-  velocity: 1000,
+  velocity: 1000
 };
 
 function getBoard({ snake, food, size }) {
@@ -26,9 +26,9 @@ function getBoard({ snake, food, size }) {
 }
 
 const cellColors = {
-  'SNAKE': 'green',
-  'NOT_SNAKE': '#eee',
-  'FOOD': 'red',
+  SNAKE: "green",
+  NOT_SNAKE: "#eee",
+  FOOD: "red"
 };
 
 function getRandomInt(min, max) {
@@ -36,19 +36,17 @@ function getRandomInt(min, max) {
 }
 
 const SnakeCell = props => (
-  <div 
+  <div
     style={{
-      display: 'inline-block',
+      display: "inline-block",
       backgroundColor: cellColors[props.state],
-      width: '30px',
-      height: '30px',
-      marginLeft: '1px',
-      marginRight: '1px',
+      width: "30px",
+      height: "30px",
+      marginLeft: "1px",
+      marginRight: "1px"
     }}
   />
 );
-
-
 
 class App extends React.Component {
   state = initialState;
@@ -60,52 +58,33 @@ class App extends React.Component {
 
   startSnake = () => {
     this.interval = setInterval(this.updateSnake, this.state.velocity);
-  }
+  };
 
   listenForKeyChanges = () => {
-    window.addEventListener('keydown', (event) => {
+    window.addEventListener("keydown", event => {
       const key = event.key;
-      switch(key) {
+      switch (key) {
         case "ArrowLeft":
-          console.log('moving left');
+          console.log("moving left");
           this.setState({ directionX: -1, directionY: 0 });
           break;
         case "ArrowRight":
-          console.log('moving right');
+          console.log("moving right");
           this.setState({ directionX: 1, directionY: 0 });
           break;
         case "ArrowUp":
-          console.log('moving up');
+          console.log("moving up");
           this.setState({ directionX: 0, directionY: -1 });
           break;
         case "ArrowDown":
-          console.log('moving down');
+          console.log("moving down");
           this.setState({ directionX: 0, directionY: 1 });
           break;
         default:
           return;
       }
     });
-  }
-
-  render() {
-    const board = this.getBoard();
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to The Snake Game</h1>
-        </header>
-        <p className="App-intro">
-          {board.map(row => (
-            <div>
-              {row.map(cell => <SnakeCell state={cell} />)}
-            </div>
-          ))}
-        </p>
-      </div>
-    );
-  }
+  };
 
   getNewHead = head => {
     return [head[0] + this.state.directionX, head[1] + this.state.directionY];
@@ -123,7 +102,7 @@ class App extends React.Component {
     const randomY = getRandomInt(0, this.state.size.y);
     const board = this.getBoard();
     const foodState = board[randomY][randomX];
-    if (foodState === 'NOT_SNAKE') {
+    if (foodState === "NOT_SNAKE") {
       return [randomX, randomY];
     }
     return this.generateFood();
@@ -135,7 +114,7 @@ class App extends React.Component {
       clearInterval(this.interval);
       this.startSnake();
     });
-  }
+  };
 
   growSnake = head => {
     const currentSnake = this.state.snake;
@@ -154,7 +133,7 @@ class App extends React.Component {
       size: this.state.size
     });
     return board;
-  }
+  };
 
   updateSnake = () => {
     const currentHead = this.state.snake[0];
@@ -174,6 +153,27 @@ class App extends React.Component {
         throw Error("Out of bounds!");
     }
   };
+
+  render() {
+    const board = this.getBoard();
+    return (
+      <div className="App">
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo" />
+          <h1 className="App-title">Welcome to The Snake Game</h1>
+        </header>
+        <p className="App-intro">
+          {board.map((row, i) => (
+            <div key={`${row.toString()}-${i}`}>
+              {row.map((cell, j) => (
+                <SnakeCell key={`${cell}-${i}-${j}`} state={cell} />
+              ))}
+            </div>
+          ))}
+        </p>
+      </div>
+    );
+  }
 }
 
 export default App;
